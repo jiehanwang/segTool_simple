@@ -1,7 +1,7 @@
 ========================================================================
     CONSOLE APPLICATION : segTool Project Overview
 ========================================================================
-
+whj
 AppWizard has created this segTool application for you.
 
 This file contains a summary of what you will find in each of the files that
