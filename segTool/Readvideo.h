@@ -7,6 +7,8 @@
 using namespace std;
 using namespace cv;
 
+#define r_width 512
+#define r_heigth 424
 //////////////////////////////////////////////////////////////////////////
 /// @author xu zhihao
 /// @struct _Vector2i
@@ -51,6 +53,7 @@ public:
 	bool readColorFrame(string filename);
 	bool readDepthFrame(string filename);
 	bool readSkeletonFrame(string filename);
+	Mat retrieveColorDepth(Mat depthMat);
 	Readvideo(void);
 	~Readvideo(void);
 };

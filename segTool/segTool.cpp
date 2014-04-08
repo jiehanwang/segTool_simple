@@ -18,11 +18,76 @@ int _tmain()
 	CString videoFileName;
 	Readvideo myReadVideo;
 	int frameSize;
-	videoFileName.Format("D:\\iData\\p08_01\\S08_000%d_1_0_20130412.oni",1);
+	videoFileName.Format("D:\\P01_0040_1_0_20140408.oni");
+	//videoFileName.Format("D:\\iData\\isolatedWord\\P50\\P50_0000_1_0_20121002.oni");
 	string  s   =   (LPCTSTR)videoFileName;
 	myReadVideo.readvideo(s);
 	frameSize = myReadVideo.vColorData.size();
+	cvNamedWindow("color_skeleton",1);
+	cvNamedWindow("depth",1);
+	cout<<"The total frame is: "<<frameSize<<endl;
 
+	for (int i=0; i<frameSize; i++)
+	{
+		CString fileName;
+		IplImage* tempImage;
+		tempImage = myReadVideo.vColorData[i];
+		for (int j=2; j<=11; j++)
+		{
+			CvPoint p1;
+			p1.x = myReadVideo.vSkeletonData[i]._2dPoint[j].x;
+			p1.y = myReadVideo.vSkeletonData[i]._2dPoint[j].y;
+			cvCircle(tempImage,p1,2,cvScalar(225,0,0),2,8,0);
+			if (j!=7 && j!=3 && j!=11)
+			{
+				CvPoint p2;
+				p2.x = myReadVideo.vSkeletonData[i]._2dPoint[j+1].x;
+				p2.y = myReadVideo.vSkeletonData[i]._2dPoint[j+1].y;
+				cvLine(tempImage,p1,p2,cvScalar(0,0,225),2,8,0);
+			}
+			if (j==2)
+			{
+				CvPoint p2;
+				p2.x = myReadVideo.vSkeletonData[i]._2dPoint[j+2].x;
+				p2.y = myReadVideo.vSkeletonData[i]._2dPoint[j+2].y;
+				CvPoint p3;
+				p3.x = myReadVideo.vSkeletonData[i]._2dPoint[j+6].x;
+				p3.y = myReadVideo.vSkeletonData[i]._2dPoint[j+6].y;
+				cvLine(tempImage,p1,p2,cvScalar(0,0,225),2,8,0);
+				cvLine(tempImage,p1,p3,cvScalar(0,0,225),2,8,0);
+			}
+			
+		}
+
+
+		cvShowImage("color_skeleton",tempImage);
+
+		//////////////////////////////////////////////////////////////////////////
+		Mat depthMat = myReadVideo.retrieveColorDepth(myReadVideo.vDepthData[i]);
+		IplImage* depthImage = &(IplImage)depthMat;
+		cvShowImage("depth",depthImage);
+
+		//
+// 		if (i<10)
+// 		{
+// 			fileName.Format("..\\output\\000%d.jpg",i);
+// 		}
+// 		else if(i<100)
+// 		{
+// 			fileName.Format("..\\output\\00%d.jpg",i);
+// 		}
+// 		else if (i<1000)
+// 		{
+// 			fileName.Format("..\\output\\0%d.jpg",i);
+// 		}
+// 		
+// 		cvSaveImage(fileName,tempImage);
+
+		cvReleaseImage(&tempImage);
+		cvWaitKey(30);
+	}
+
+	//
 // 	CreateWnd(); 
 // 	HDC hDC = GetDC(g_hWnd);
 // 	int previousFrame;
@@ -124,8 +189,9 @@ int _tmain()
 // 		sentenceIndex++;
 // 	}
 
-	
-
+	cvDestroyWindow("color_skeleton");
+	cvDestroyWindow("depth");
+	cout<<"Done!"<<endl;
 	getchar();
 	return 0;
 }
